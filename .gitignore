@@ -1,0 +1,13 @@
+# Environment and secret files
+.env
+
+# Python cache and build files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+
+# Docker cache
+.docker/

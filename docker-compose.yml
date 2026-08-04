@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  flight-service:
+    build: .
+    command: uvicorn flight_service:app --host 0.0.0.0 --port 8003
+    ports:
+      - "8003:8003"
+    environment:
+      - DUFFEL_ACCESS_TOKEN=${DUFFEL_ACCESS_TOKEN}
+
+  hotel-service:
+    build: .
+    command: uvicorn hotel_service:app --host 0.0.0.0 --port 8004
+    ports:
+      - "8004:8004"
+
+  trip-orchestrator:
+    build: .
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      - flight-service
+      - hotel-service
+
+  streamlit-ui:
+    build: .
+    command: streamlit run app.py --server.port=8501 --server.address=0.0.0.0
+    ports:
+      - "8501:8501"
+    depends_on:
+      - trip-orchestrator
