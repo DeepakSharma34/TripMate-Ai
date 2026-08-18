@@ -2,10 +2,7 @@ import os
 import streamlit as st
 import requests
 
-# Combine host and port for the orchestrator
-ORCH_HOST = os.getenv("ORCHESTRATOR_HOST", "localhost")
-ORCH_PORT = os.getenv("ORCHESTRATOR_PORT", "8000")
-ORCHESTRATOR_URL = f"http://{ORCH_HOST}:{ORCH_PORT}"
+ORCHESTRATOR_URL = os.getenv("ORCHESTRATOR_URL", "http://localhost:8000")
 
 st.title("✈️ TripMate AI Travel Concierge")
 st.write("Plan your dream trip within budget using our multi-agent AI microservice architecture!")
