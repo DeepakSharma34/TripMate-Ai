@@ -1,0 +1,56 @@
+services:
+  # 1. Flight Microservice
+  - type: web
+    name: flight-service
+    env: docker
+    dockerfilePath: ./DockerFile
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn flight_service:app --host 0.0.0.0 --port $PORT
+    plan: free
+
+  # 2. Hotel Microservice
+  - type: web
+    name: hotel-service
+    env: docker
+    dockerfilePath: ./DockerFile
+    startCommand: uvicorn hotel_service:app --host 0.0.0.0 --port $PORT
+    plan: free
+
+  # 3. Trip Orchestrator Service (LangGraph & Gemini)
+  - type: web
+    name: trip-orchestrator
+    env: docker
+    dockerfilePath: ./DockerFile
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: DUFFEL_API_KEY
+        sync: false
+      - key: RAPIDAPI_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: FLIGHT_SERVICE_URL
+        fromService:
+          type: web
+          name: flight-service
+          property: url
+      - key: HOTEL_SERVICE_URL
+        fromService:
+          type: web
+          name: hotel-service
+          property: url
+
+  # 4. Streamlit Frontend UI
+  - type: web
+    name: streamlit-ui
+    env: docker
+    dockerfilePath: ./DockerFile
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+    plan: free
+    envVars:
+      - key: ORCHESTRATOR_URL
+        fromService:
+          type: web
+          name: trip-orchestrator
+          property: url

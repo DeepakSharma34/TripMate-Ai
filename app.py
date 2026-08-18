@@ -1,5 +1,8 @@
+import os
 import streamlit as st
 import requests
+
+ORCHESTRATOR_URL = os.getenv("ORCHESTRATOR_URL", "http://localhost:8000")
 
 st.title("✈️ TripMate AI Travel Concierge")
 st.write("Plan your dream trip within budget using our multi-agent AI microservice architecture!")

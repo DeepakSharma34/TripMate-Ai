@@ -11,6 +11,9 @@ from mcp_tools import search_flights, search_hotels
 
 load_dotenv()
 
+FLIGHT_SERVICE_URL = os.getenv("FLIGHT_SERVICE_URL", "http://localhost:8000")
+HOTEL_SERVICE_URL = os.getenv("HOTEL_SERVICE_URL", "http://localhost:8000")
+
 api_key =  os.getenv("GEMINI_API_KEY")
 if not api_key:
     raise ValueError("API Key not found! Please set GOOGLE_API_KEY in your .env file.")
