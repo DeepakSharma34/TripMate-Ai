@@ -33,7 +33,7 @@ if st.button("Generate AI Itinerary 🚀"):
         }
         
         try:
-            response = requests.post("ORCHESTRATOR_URL/plan_trip", json=payload)
+            response = requests.post(f"{ORCHESTRATOR_URL}/plan_trip", json=payload)
             if response.status_code == 200:
                 data = response.json()
                 st.success("Itinerary generated successfully!")
