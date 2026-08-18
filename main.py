@@ -11,8 +11,14 @@ from mcp_tools import search_flights, search_hotels
 
 load_dotenv()
 
-FLIGHT_SERVICE_URL = os.getenv("FLIGHT_SERVICE_URL", "http://localhost:8000")
-HOTEL_SERVICE_URL = os.getenv("HOTEL_SERVICE_URL", "http://localhost:8000")
+# Combine host and port for microservices
+FLIGHT_HOST = os.getenv("FLIGHT_SERVICE_HOST", "localhost")
+FLIGHT_PORT = os.getenv("FLIGHT_SERVICE_PORT", "8000")
+FLIGHT_SERVICE_URL = f"http://{FLIGHT_HOST}:{FLIGHT_PORT}"
+
+HOTEL_HOST = os.getenv("HOTEL_SERVICE_HOST", "localhost")
+HOTEL_PORT = os.getenv("HOTEL_SERVICE_PORT", "8000")
+HOTEL_SERVICE_URL = f"http://{HOTEL_HOST}:{HOTEL_PORT}"
 
 api_key =  os.getenv("GEMINI_API_KEY")
 if not api_key:

@@ -4,8 +4,7 @@ services:
     name: flight-service
     env: docker
     dockerfilePath: ./DockerFile
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn flight_service:app --host 0.0.0.0 --port $PORT
+    dockerCommand: uvicorn flight_service:app --host 0.0.0.0 --port $PORT
     plan: free
 
   # 2. Hotel Microservice
@@ -13,7 +12,7 @@ services:
     name: hotel-service
     env: docker
     dockerfilePath: ./DockerFile
-    startCommand: uvicorn hotel_service:app --host 0.0.0.0 --port $PORT
+    dockerCommand: uvicorn hotel_service:app --host 0.0.0.0 --port $PORT
     plan: free
 
   # 3. Trip Orchestrator Service (LangGraph & Gemini)
@@ -21,7 +20,7 @@ services:
     name: trip-orchestrator
     env: docker
     dockerfilePath: ./DockerFile
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    dockerCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     plan: free
     envVars:
       - key: DUFFEL_API_KEY
@@ -30,27 +29,42 @@ services:
         sync: false
       - key: GEMINI_API_KEY
         sync: false
-      - key: FLIGHT_SERVICE_URL
+      - key: FLIGHT_SERVICE_HOST
         fromService:
           type: web
           name: flight-service
-          property: url
-      - key: HOTEL_SERVICE_URL
+          property: host
+      - key: FLIGHT_SERVICE_PORT
+        fromService:
+          type: web
+          name: flight-service
+          property: port
+      - key: HOTEL_SERVICE_HOST
         fromService:
           type: web
           name: hotel-service
-          property: url
+          property: host
+      - key: HOTEL_SERVICE_PORT
+        fromService:
+          type: web
+          name: hotel-service
+          property: port
 
   # 4. Streamlit Frontend UI
   - type: web
     name: streamlit-ui
     env: docker
     dockerfilePath: ./DockerFile
-    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+    dockerCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
     plan: free
     envVars:
-      - key: ORCHESTRATOR_URL
+      - key: ORCHESTRATOR_HOST
         fromService:
           type: web
           name: trip-orchestrator
-          property: url
+          property: host
+      - key: ORCHESTRATOR_PORT
+        fromService:
+          type: web
+          name: trip-orchestrator
+          property: port
