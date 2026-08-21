@@ -50,12 +50,11 @@ services:
           name: hotel-service
           property: port
 
-# 4. Streamlit Frontend UI
+  # 4. Streamlit Frontend UI
   - type: web
     name: streamlit-ui
     env: docker
     dockerfilePath: ./DockerFile
-    # Change dockerCommand to run streamlit explicitly
     dockerCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
     plan: free
     envVars:
